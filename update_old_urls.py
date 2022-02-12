@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import signal
-from api_connector import API
 from importer import Import
 
 
@@ -10,18 +9,10 @@ class URL(Import):
     not_found_ids = []
     model = 'product.template'
 
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
-
     def process_row(self, row):
         product = list(filter(
             lambda item: item['name'] == row[0],
-            self.products))
+            self.imported_records))
         if not len(product):
             return
         product = product[0]

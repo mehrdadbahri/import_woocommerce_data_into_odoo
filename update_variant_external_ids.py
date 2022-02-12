@@ -8,15 +8,7 @@ from importer import Import
 class Variant(Import):
     updated_ids = []
     not_found_ids = []
-    model = 'product.template.attribute.value'
-
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
+    model = 'product.template'
 
     def get_variants(self):
         model = 'ir.model.data'
@@ -38,7 +30,7 @@ class Variant(Import):
         if row[0].split('_')[-1] in self.not_found_ids:
             return
         product = list(
-            filter(lambda item: item['name'] == row[0], self.products))
+            filter(lambda item: item['name'] == row[0], self.imported_records))
         if not len(product):
             print("Product not found: {}".format(row[0]))
             return
@@ -72,7 +64,8 @@ class Variant(Import):
                 ['id', '=', template_value_id],
             ]
             fields = ['id', 'product_attribute_value_id']
-            variant_values = self.api.search_read(self.model, domain, fields,
+            model = 'product.template.attribute.value'
+            variant_values = self.api.search_read(model, domain, fields,
                                                   1)
             for val in variant_values:
                 if val['product_attribute_value_id'][0] == value_id:

@@ -2,29 +2,20 @@
 # -*- coding: utf-8 -*-
 import signal
 import json
-from api_connector import API
 from importer import Import
 
 
 class Price(Import):
     updated_ids = []
     not_found_ids = []
-    model = 'product.template.attribute.value'
-
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
+    model = 'product.template'
 
     def process_row(self, row):
         if row[0].split('_')[-1] in self.not_found_ids:
             return
         product = list(
             filter(lambda item: item['name'] == "product_{}".format(row[0]),
-                   self.products))
+                   self.imported_records))
         if not len(product):
             # print("Product not found: {}".format(rows[0][0]))
             self.not_found_ids.append(row[0])
@@ -54,10 +45,11 @@ class Price(Import):
                               variant[0]['res_id']
                           ]]
                 fields = ['id']
-                variant_line = self.api.search_read(self.model, domain, fields,
+                model = 'product.template.attribute.value'
+                variant_line = self.api.search_read(model, domain, fields,
                                                     1)
                 vals = {'price_extra': int(float(variants[item]))}
-                self.api.update(self.model, [variant_line[0]['id']], vals)
+                self.api.update(model, [variant_line[0]['id']], vals)
         elif len(variants.keys()) == 1:
             vals = {
                 'lst_price': int(float(variants[list(variants.keys())[0]]))

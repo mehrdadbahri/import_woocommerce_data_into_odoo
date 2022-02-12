@@ -3,7 +3,6 @@
 import signal
 import csv
 import traceback
-from api_connector import API
 from importer import Import
 
 
@@ -11,15 +10,7 @@ class AttributeLine(Import):
     updated_ids = []
     applied_ids = []
     not_found_ids = []
-    model = 'product.template.attribute.line'
-
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
+    model = 'product.template'
 
     def run(self):
         with open(self.data_file) as csv_file:
@@ -60,7 +51,7 @@ class AttributeLine(Import):
         product = list(
             filter(
                 lambda item: item['name'] == "product_{}".format(rows[0][0]),
-                self.products))
+                self.imported_records))
         if not len(product):
             # print("Product not found: {}".format(rows[0][0]))
             self.not_found_ids.append(rows[0][0])
@@ -98,7 +89,8 @@ class AttributeLine(Import):
                         'value_ids': [[6, 0, value_ids]],
                     }
                     print(data)
-                    self.api.create(self.model, [data])
+                    model = 'product.template.attribute.line'
+                    self.api.create(model, [data])
                 # else:
                 #     data = {
                 #         'attribute_id': attribute[0]['res_id'],

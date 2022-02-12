@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import signal
-from api_connector import API
 from importer import Import
 
 
@@ -10,14 +9,6 @@ class Quantity(Import):
     not_found_ids = []
     model = 'product.template'
 
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
-
     def process_row(self, row):
         if row[1] == "NULL" or int(float(row[1])) == 0:
             return
@@ -25,7 +16,7 @@ class Quantity(Import):
             return
         product = list(
             filter(lambda item: item['name'] == "product_{}".format(row[0]),
-                   self.products))
+                   self.imported_records))
         if not len(product):
             # print("Product not found: {}".format(rows[0][0]))
             self.not_found_ids.append(row[0])

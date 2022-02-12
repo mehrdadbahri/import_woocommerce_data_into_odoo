@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import signal
 import base64
-from api_connector import API
 from importer import Import
 
 
@@ -10,14 +9,6 @@ class Variant(Import):
     updated_ids = []
     not_found_ids = []
     model = 'product.product'
-
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_products(self)
-            return True
-        return False
 
     def get_variants(self):
         model = 'ir.model.data'

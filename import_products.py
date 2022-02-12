@@ -4,7 +4,6 @@ import signal
 import re
 import traceback
 import base64
-from api_connector import API
 from importer import Import
 
 
@@ -13,13 +12,8 @@ class Product(Import):
     model = 'product.template'
 
     def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_records(self)
-            self.get_imported_categories(self)
-            return True
-        return False
+        super().__init__(data_file)
+        self.get_imported_categories(self)
 
     def get_imported_categories(self):
         model = 'ir.model.data'

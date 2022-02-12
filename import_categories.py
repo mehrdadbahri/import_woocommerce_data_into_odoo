@@ -2,21 +2,12 @@
 # -*- coding: utf-8 -*-
 import signal
 import re
-from api_connector import API
 from importer import Import
 
 
 class Category(Import):
     created_ids = []
     model = 'product.public.category'
-
-    def __init__(self, data_file):
-        self.data_file = data_file
-        self.api = API()
-        if self.api:
-            self.get_imported_records(self)
-            return True
-        return False
 
     def process_row(self, row):
         if self.already_imported(row[0]):
@@ -31,7 +22,7 @@ class Category(Import):
                     self.model, row[3])
                 data['parent_id'] = parent_id
             except Exception:
-                print("Parent not found: {}, ignoring...".format(row[0]))
+                # print("Parent not found: {}, ignoring...".format(row[0]))
                 return
         if row[2]:
             description = row[2].replace('\\"', '"').replace('\\n', '\n')

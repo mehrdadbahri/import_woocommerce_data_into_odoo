@@ -12,19 +12,17 @@ class API(object):
         try:
             self.get_config()
             self.uid, self.models = self.connect()
-            return True
         except Exception:
             print(traceback.format_exc())
-            return False
 
     def get_config(self):
         configs = configparser.ConfigParser()
         path = Path.home() / 'odoo_api.ini'
         configs.read(path)
-        self.db = configs['db']
-        self.username = configs['username']
-        self.password = configs['password']
-        self.url = configs['url']
+        self.db = configs['database']['db']
+        self.username = configs['database']['username']
+        self.password = configs['database']['password']
+        self.url = configs['database']['url']
 
     def connect(self):
         common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(
