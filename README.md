@@ -34,3 +34,5 @@ But for other data run each python script to import the related data. You should
 * update_variant_imgs.py
 * update_quantities.py
 * update_old_urls.py (Optional: Only to have the woocommerce url of product in case needed. You need to create the field on product.template)
+
+Read in more details in [this article](https://medium.com/@mehrdadbahri71/migrate-from-woo-commerce-to-odoo-f4a8d267302e).
